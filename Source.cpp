@@ -55,6 +55,18 @@ void Employee::setName(string myname)
 	name = myname;
 }
 
+string Employee::getID() {
+
+	return ID;
+
+}
+
+string Employee::getName() {
+
+	return name;
+
+}
+
 //-----------------------------------------------------------
 
 class Project {
@@ -325,7 +337,7 @@ string ProjectList::getProjectID(string mytitle)
 }
 void ProjectList::listProjects()
 {
-	for (int i = 0; i < listofProjects.size();i++)
+	for (int i = 0; i < listofProjects.size(); i++)
 	{
 		cout << "Project ID: " << listofProjects[i].getID << " Project Tite:" << listofProjects[i].getTitle << endl;
 	}
@@ -523,8 +535,101 @@ void listofPrjEmpAssignment::listAllIncompleteProjects()
 	}
 }
 
-//------------------------------- MAIN--------------
-int main()
-{
+
+void main() {
+
+	char x;
+	string emptextfile, projecttextfile, assigntextfile;
+
+	cout << "Enter the three files that will be used in the program : ";
+	cin >> emptextfile >> projecttextfile >> assigntextfile;
+
+	Employee emp;
+	Project prj;
+	EmployeeList elist;
+	ProjectList plist;
+	ProjectEmployeeAssignment peassign;
+	listofPrjEmpAssignment peassignlist;
+
+	cout << "Enter the letter corresponding to the command to initiate it : " << endl;
+
+	while (cin >> x) {
+
+		cout << "a) Add a new employee to the list of employees" << endl;
+		cout << "b) Add a new project to the list of projects" << endl;
+		cout << "c) List all employees and the projects they are assigned to (if any)" << endl;
+		cout << "d) List all projects (project name & ID)" << endl;
+		cout << "e) List all completed projects (Employee’s name & ID, project’s name & ID)" << endl;
+		cout << "f) List all incomplete projects (Employee’s name & ID, project’s name & ID)" << endl;
+		cout << "g) Search for a given employee or project by ID or name" << endl;
+		cout << "h) Assign an employee to a project (if not assigned already)" << endl;
+		cout << "i) Set a project as complete or incomplete for a given employee" << endl;
+		cout << "Press any letter other than the mentioned ones to exit the program" << endl;
+
+		if (x == 'a') {
+			string name, ID;
+			cout << "Enter name and ID of new Employee" << endl;
+			cin >> name >> ID;
+			emp.setName(name);
+			emp.setID(ID);
+			elist.addEmployee(emp);
+		
+		}
+		else if (x == 'b') {
+
+			string title, ID;
+			cout << "Enter title and ID of new Project" << endl;
+			cin >> title >> ID;
+			prj.setTitle(title);
+			prj.setID(ID);
+
+		}
+		else if (x == 'c') {
+
+			peassignlist.listAllProjectsAssignments();
+
+		}
+		else if (x == 'd') {
+
+			plist.listProjects();
+
+		}
+		else if (x == 'e') {
+
+			peassignlist.listAllCompleteProjects();
+
+		}
+		else if (x == 'f') {
+
+			peassignlist.listAllIncompleteProjects();
+
+		}
+		else if (x == 'g') {
+
+			//in need for a function that searches for a given employee or project by id or name
+
+		}
+		else if (x == 'h') {
+
+			//needs a function that checks if the employee is assigned to a particular project or not
+			//in addition, it needs to check if employee and project exist
+
+		}
+		else if (x == 'i') {
+
+			//still incomplete, needs project locator so that status can be changed
+			int stat = -1;
+			cout << "Enter 0 or 1 for the project status : ";
+			while (!(stat == 0 || stat == 1)) cin >> stat;
+			peassign.setStatus(stat);
+			// it should be better using this function: peassignlist.markProjectAsCompleted();
+
+		}
+		else { 
+			cout << "Exiting the program" << endl;
+			exit(1); 
+		}
+
+	}
 
 }
