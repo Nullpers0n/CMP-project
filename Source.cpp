@@ -92,6 +92,19 @@ Project::Project(string mytitle, string myid)
 	title = mytitle;
 	ID = myid;
 }
+
+string Project::getID() {
+
+	return ID;
+
+}
+
+string Project::getTitle() {
+
+	return title;
+
+}
+
 void Project::setID(string myid)
 {
 	ID = myid;
@@ -122,7 +135,7 @@ public:
 };
 EmployeeList::EmployeeList()
 {
-	ifstream mycin("employeelist.txt");
+	ifstream mycin("Employeelist.txt");
 	if (mycin.fail())
 	{
 		cout << "Error: Employee list file opening failed... Exiting\n";
@@ -197,7 +210,7 @@ void EmployeeList::listEmployees()
 {
 	for (int i = 0; i < listofEmployees.size(); i++)
 	{
-		cout << "ID: " << listofEmployees[i].getID << "  " << "Name: " << listofEmployees[i].getName << endl;
+		cout << "ID: " << listofEmployees[i].getID() << "  " << "Name: " << listofEmployees[i].getName() << endl;
 	}
 }
 
@@ -241,7 +254,7 @@ int ProjectList::isItInList(Project p)
 {
 	for (int i = 0; listofProjects.size(); i++)
 	{
-		if ((p.getID() == listofProjects[i].getID) && (p.getTitle() == listofProjects[i].getTitle))
+		if ((p.getID() == listofProjects[i].getID()) && (p.getTitle() == listofProjects[i].getTitle()))
 		{
 			return i;
 		}
@@ -273,7 +286,7 @@ int ProjectList::getIndexUsingID(string myid)
 {
 	for (int i = 0; i < listofProjects.size(); i++)
 	{
-		if (myid == listofProjects[i].getID)
+		if (myid == listofProjects[i].getID())
 		{
 			return i;
 		}
@@ -286,7 +299,7 @@ int ProjectList::getIndexUsingTitle(string mytitle)
 {
 	for (int i = 0; i < listofProjects.size(); i++)
 	{
-		if (mytitle == listofProjects[i].getTitle)
+		if (mytitle == listofProjects[i].getTitle())
 		{
 			return i;
 		}
@@ -300,7 +313,7 @@ ProjectList::ProjectList()
 	// used to push back to the project vector 
 	Project p;
 	string myid, mytitle;
-	ifstream mycin("projectlist.txt");
+	ifstream mycin("Projectlist.txt");
 	if (mycin.fail())
 	{
 		cout << "Error: project list file opening failed... Exiting.\n";
@@ -363,13 +376,13 @@ string ProjectList::getProjectID(string mytitle)
 		printError(mytitle);
 		index = getIndexUsingTitle(mytitle);
 	}
-	return listofProjects[index].getID;
+	return listofProjects[index].getID();
 }
 void ProjectList::listProjects()
 {
-	for (int i = 0; i < listofProjects.size();i++)
+	for (int i = 0; i < listofProjects.size(); i++)
 	{
-		cout << "Project ID: " << listofProjects[i].getID << " Project Tite:" << listofProjects[i].getTitle << endl;
+		cout << "Project ID: " << listofProjects[i].getID() << " Project Tite:" << listofProjects[i].getTitle() << endl;
 	}
 }
 
@@ -471,10 +484,10 @@ void listofPrjEmpAssignment::EmployeesWorkingOnProject(string mypid)
 	int index;
 	for (int i = 0; list.size(); i++)
 	{
-		if (list[i].getpID == mypid)
+		if (list[i].getpID() == mypid)
 		{
 			// give me the index in the employeelist vector of that emplpoyee ID 
-			index = el.getIndexUsingID(list[i].geteID);
+			index = el.getIndexUsingID(list[i].geteID());
 			// so i can use it here to get that employee.
 			e = el.getEmployee(index);
 			cout << "Emplyee ID: " << e.getID() << "  Employee Name: " << e.getName() << endl;
@@ -488,7 +501,7 @@ int listofPrjEmpAssignment::isEmpPrjInList(string myeid, string mypid)
 {
 	for (int i = 0; i < list.size(); i++)
 	{
-		if ((myeid == list[i].geteID) && (mypid == list[i].getpID))
+		if ((myeid == list[i].geteID()) && (mypid == list[i].getpID()))
 		{
 			return i;
 		}
@@ -500,7 +513,7 @@ int listofPrjEmpAssignment::isEmpInList(string myeid)
 {
 	for (int i = 0; i < list.size(); i++)
 	{
-		if (myeid == list[i].geteID)
+		if (myeid == list[i].geteID())
 		{
 			return i;
 		}
@@ -511,7 +524,7 @@ int listofPrjEmpAssignment::isPrjInList(string mypid)
 {
 	for (int i = 0; i < list.size(); i++)
 	{
-		if (mypid == list[i].getpID)
+		if (mypid == list[i].getpID())
 		{
 			return i;
 		}
@@ -555,20 +568,20 @@ listofPrjEmpAssignment::listofPrjEmpAssignment()
 void listofPrjEmpAssignment::addEmpPrjAssignment(Employee e, Project b)
 {
 	ProjectEmployeeAssignment epa;
-	epa.seteID(e.getID);
-	epa.setpID(b.getID);
+	epa.seteID(e.getID());
+	epa.setpID(b.getID());
 	epa.setStatus(false);
 	list.push_back(epa);
 }
 bool listofPrjEmpAssignment::markProjectAsCompleted(Employee e, Project b)
 {
-	int index;
+	int index;  //we got a problem in here
 	if (index == -1)
 	{
 		// return fasle if the project and employee assingment do not exist
 		return false;
 	}
-	index = isEmpPrjInList(e.getID, b.getID);
+	index = isEmpPrjInList(e.getID(), b.getID());
 	list[index].setStatus(true);
 	return true;
 }
@@ -589,16 +602,16 @@ void listofPrjEmpAssignment::listAllIncompleteProjects()
 	for (int i = 0; i < list.size(); i++)
 	{
 		// these functions we created return emoployee and project at a given index 
-		if (list[i].getStatus == false)
+		if (list[i].getStatus() == false)
 		{
 			// get the index of the "completed" project from the projectlist vector
 			// and use it to return that project
-			index = pl.getIndexUsingID(list[i].getpID);
+			index = pl.getIndexUsingID(list[i].getpID());
 			p = pl.getProject(index);
-			cout << "Project ID: " << p.getID << "  Project Title: " << p.getTitle << endl;
+			cout << "Project ID: " << p.getID() << "  Project Title: " << p.getTitle() << endl;
 			cout << "Employees working on that project:- \n";
 			// use this functino to print them 
-			EmployeesWorkingOnProject(list[i].getpID);
+			EmployeesWorkingOnProject(list[i].getpID());
 		}
 	}
 }
@@ -606,11 +619,6 @@ void listofPrjEmpAssignment::listAllIncompleteProjects()
 void main() {
 
 	char x;
-	string emptextfile, projecttextfile, assigntextfile;
-
-	cout << "Enter the three files that will be used in the program : ";
-	cin >> emptextfile >> projecttextfile >> assigntextfile;
-
 	Employee emp;
 	Project prj;
 	EmployeeList elist;
@@ -700,4 +708,3 @@ void main() {
 	}
 
 }
- 
