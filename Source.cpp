@@ -32,7 +32,8 @@ public:
 	void setID(string myid);
 	void setName(string myname);
 
-	//…add other functions as needed
+	//…add other functions as 
+
 };
 //-------- constrcutor 
 Employee::Employee()
@@ -132,7 +133,23 @@ public:
 	void listEmployees();
 	~EmployeeList(); //writes back to the same input file
 					 //…add other functions as needed
+
+					 // function to check if employee is in list before adding. 
+	int IsItInList(Employee e);
 };
+
+int EmployeeList::IsItInList(Employee e)
+{
+	for (int i = 0; i < listofEmployees.size(); i++)
+	{
+		if (e.getID == listofEmployees[i].getID())
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
 EmployeeList::EmployeeList()
 {
 	ifstream mycin("Employeelist.txt");
@@ -160,18 +177,43 @@ EmployeeList::EmployeeList()
 
 void EmployeeList::addEmployee(Employee e)
 {
-	listofEmployees.push_back(e);  //should we check if the employee already exists?
+	int i;
+	i = IsItInList(e);
+	if (i == -1)
+	{
+		listofEmployees.push_back(e);
+	}
+	//should we check if the employee already exists?
+	else
+	{
+		cout << "Employee already exists.\n";
+	}
 }
 
 void EmployeeList::deleteEmployee(string myid)
 {
+	listofPrjEmpAssignment epa;
+	ProjectEmployeeAssignment pe;
+	Project p;
+	Employee e;
 	int index;
+	int j;
 	index = getIndexUsingID(myid);
 	while (index == -1)
 	{
 		printError(myid);
 		index = getIndexUsingID(myid);
 	}
+	// check if this employee is assinged to a project before deleting
+	j = epa.isEmpInList(myid);
+	if (j >= 0)
+	{
+		e = epa.getEmpFromList(j);
+		p = epa.getProjFromList(j);
+		// delete that assingment 
+		epa.deleteEmpPrjAss(e, p);
+	}
+	// now delete the actual employee. 
 	listofEmployees.erase(listofEmployees.begin() + index);
 
 	//maybe delete the projects that he/she was working on too?
@@ -219,13 +261,18 @@ void EmployeeList::listEmployees()
 
 EmployeeList::~EmployeeList()
 {
-
-	ofstream mycout;
-	mycout.open("Employeelist.txt");
-	//printing back to the txt file and (erasing all the components inside the destructor?)
+	ofstream mycout("Employeelist.txt");
+	if (mycout.fail())
+	{
+		cout << "Error: Employee list file opening failed... Existing\n";
+		exit(6);
+	}
+	for (int i = 0; i < listofEmployees.size(); i++)
+	{
+		cout << listofEmployees[i].getID() << " " << listofEmployees[i].getName() << endl;
+	}
 	mycout.flush();
 	mycout.close();
-
 }
 
 //-----------------------------------------
@@ -341,13 +388,29 @@ ProjectList::ProjectList()
 
 void ProjectList::deleteProject(string myid)
 {
+
+	listofPrjEmpAssignment epa;
+	ProjectEmployeeAssignment pe;
+	Project p;
+	Employee e;
 	int index;
+	int j;
 	index = getIndexUsingID(myid);
 	while (index == -1)
 	{
 		printError(myid);
 		index = getIndexUsingID(myid);
 	}
+	// check if this employee is assinged to a project before deleting
+	j = epa.isEmpInList(myid);
+	if (j >= 0)
+	{
+		e = epa.getEmpFromList(j);
+		p = epa.getProjFromList(j);
+		// delete that assingment 
+		epa.deleteEmpPrjAss(e, p);
+	}
+	// now delete the actual project
 	listofProjects.erase(listofProjects.begin() + index);
 }
 
@@ -394,8 +457,18 @@ void ProjectList::listProjects()
 
 ProjectList::~ProjectList() {
 
-	//destructor
-
+	ofstream mycout("Projectlist.txt");
+	if (mycout.fail())
+	{
+		cout << "Error: Project list file opening failed... Exisitng\n";
+		exit(7);
+	}
+	for (int i = 0; i < listofProjects.size(); i++)
+	{
+		cout << listofProjects[i].getID() << " " << listofProjects[i].getTitle() << endl;
+	}
+	mycout.flush();
+	mycout.close();
 }
 
 //-----------------------------------------
@@ -403,20 +476,20 @@ ProjectList::~ProjectList() {
 class ProjectEmployeeAssignment {
 private:
 	string pID, eID;
-	bool status;
+	int status;
 	//…add more attributes as needed
 public:
 	ProjectEmployeeAssignment();
 	ProjectEmployeeAssignment
-	(string mypID, string myeID, bool complete = false);
+	(string mypID, string myeID, int complete = false);
 	string getpID();
 	string geteID();
-	bool getStatus();
+	int getStatus();
 	void setpID(string mypid);
 	void seteID(string myeid);
-	void setStatus(bool mys);
-	bool isCompleted(string s);
-	~ProjectEmployeeAssignment();
+	void setStatus(int mys);
+	bool isCompleted(int s);
+	// ~ProjectEmployeeAssignment();
 	//a destructor is needed
 	//…add other functions as needed
 };
@@ -424,9 +497,9 @@ ProjectEmployeeAssignment::ProjectEmployeeAssignment()
 {
 	pID = "0";
 	eID = "0";
-	status = false;
+	status = 0;
 }
-ProjectEmployeeAssignment::ProjectEmployeeAssignment(string mypID, string myeID, bool complete)
+ProjectEmployeeAssignment::ProjectEmployeeAssignment(string mypID, string myeID, int complete)
 {
 	pID = mypID;
 	eID = myeID;
@@ -441,7 +514,7 @@ string ProjectEmployeeAssignment::geteID()
 {
 	return eID;
 }
-bool ProjectEmployeeAssignment::getStatus()
+int ProjectEmployeeAssignment::getStatus()
 {
 	return status;
 }
@@ -453,14 +526,14 @@ void ProjectEmployeeAssignment::seteID(string myeid)
 {
 	eID = myeid;
 }
-void ProjectEmployeeAssignment::setStatus(bool mys)
+void ProjectEmployeeAssignment::setStatus(int mys)
 {
 	status = mys;
 }
-bool ProjectEmployeeAssignment::isCompleted(string s)
+bool ProjectEmployeeAssignment::isCompleted(int s)
 {
 	// i used find just in case cin took space aka " " from the file. 
-	if (s.find("1") <= 0)
+	if (s == 1)
 	{
 		return true;
 	}
@@ -476,7 +549,7 @@ private:
 public:
 	listofPrjEmpAssignment();//reads from the file
 	void addEmpPrjAssignment(Employee e, Project b);
-	bool markProjectAsCompleted(Employee e, Project b);
+	void setProjectStatus(Project b, int mys);
 	int isEmpInList(string myeid);
 	int isPrjInList(string mypid);
 	int isEmpPrjInList(string myeid, string mypid);
@@ -487,8 +560,55 @@ public:
 							  //…add other functions as needed
 
 							  //function to list the Employees working on a certain project. 
+
+							  // function to delete a certin employee and project assingment. 
 	void EmployeesWorkingOnProject(string mypid);
+
+	void deleteEmpPrjAss(Employee e, Project b);
+
+	// function to set project as incomplete 
+
+	/*void markPrjAsIncomplete(Project b);*/
+
+	// functions to get an employee and proects from the list.
+	Employee getEmpFromList(int index);
+	Project getProjFromList(int index);
 };
+
+
+Employee listofPrjEmpAssignment::getEmpFromList(int index)
+{
+	EmployeeList el;
+	Employee e;
+	// if the index is greater than the size of the list or less than zero, cout this error. 
+	while ((index >= list.size()) || (index < 0))
+	{
+		cout << "Error: index is out of range, enter again: ";
+		cin >> index;
+	}
+	// using the ID from the list get the index 
+	index = el.getIndexUsingID(list[index].geteID());
+	// use that index in a function that returnes an employee 
+	e = el.getEmployee(index);
+	return e;
+}
+
+Project listofPrjEmpAssignment::getProjFromList(int index)
+{
+	Project p;
+	ProjectList pl;
+	// if the index is greater than the size of the list or less than zero, cout this error. 
+	while ((index >= list.size()) || (index < 0))
+	{
+		cout << "Error: index is out of range, enter again: ";
+		cin >> index;
+	}
+	// using the ID from the list get the index 
+	index = pl.getIndexUsingID(list[index].getpID());
+	// use that index in a function that returnes an employee 
+	p = pl.getProject(index);
+	return p;
+}
 
 void listofPrjEmpAssignment::EmployeesWorkingOnProject(string mypid)
 {
@@ -507,8 +627,6 @@ void listofPrjEmpAssignment::EmployeesWorkingOnProject(string mypid)
 		}
 	}
 }
-
-
 
 int listofPrjEmpAssignment::isEmpPrjInList(string myeid, string mypid)
 {
@@ -555,22 +673,23 @@ listofPrjEmpAssignment::listofPrjEmpAssignment()
 	}
 	ProjectEmployeeAssignment epa;
 	// mys is for status (0 or 1)
-	string mypid, myeid, mys;
+	string mypid, myeid;
+	int mys;
 	getline(mycin, myeid, ' ');
 	while (!mycin.eof())
 	{
 		getline(mycin, myeid, ' ');
-		getline(mycin, mys);
+		cin >> mys;
 		epa.seteID(myeid);
 		epa.setpID(mypid);
 		// if there is a one in there push it back as true.
-		if (epa.isCompleted(mys) == true)
+		if (epa.isCompleted(mys) == 1)
 		{
-			epa.setStatus(true);
+			epa.setStatus(1);
 		}
 		else
 		{
-			epa.setStatus(false);
+			epa.setStatus(0);
 		}
 		list.push_back(epa);
 		getline(mycin, myeid, ' ');
@@ -581,27 +700,79 @@ listofPrjEmpAssignment::listofPrjEmpAssignment()
 void listofPrjEmpAssignment::addEmpPrjAssignment(Employee e, Project b)
 {
 	ProjectEmployeeAssignment epa;
-	epa.seteID(e.getID());
-	epa.setpID(b.getID());
-	epa.setStatus(false);
-	list.push_back(epa);
-}
-bool listofPrjEmpAssignment::markProjectAsCompleted(Employee e, Project b)
-{
-	int index;  //we got a problem in here
-	if (index == -1)
+	int i;
+	i = isEmpPrjInList(e.getID(), b.getID());
+	if (i == -1)
 	{
-		// return fasle if the project and employee assingment do not exist
-		return false;
+		epa.seteID(e.getID());
+		epa.setpID(b.getID());
+		epa.setStatus(0);
+		list.push_back(epa);
 	}
-	index = isEmpPrjInList(e.getID(), b.getID());
-	list[index].setStatus(true);
-	return true;
-}
+	else
+	{
+		cout << "Assignment already exists.\n";
+	}
 
+}
+void listofPrjEmpAssignment::setProjectStatus(Project b, int mys)
+{
+	string ID;
+	int index;  //we got a problem in here // SOLVED (I THINK)
+	index = isPrjInList(b.getID());
+	while (index == -1)
+	{
+		cout << "Error: Assingment doesn't exist. Enter the ID again: \n";
+		b.setID(ID);
+		index = isPrjInList(b.getID());
+	}
+	if (mys == 1)
+	{
+		if (list[index].getStatus() == 1)
+		{
+			cout << "Project is already set as completed.\n";
+		}
+		else
+		{
+			list[index].setStatus(1);
+		}
+	}
+	if (mys == 0)
+	{
+		if (list[index].getStatus() == 0)
+		{
+			cout << "Project is already set as false.\n";
+		}
+		else
+		{
+			list[index].setStatus(0);
+		}
+	}
+}
 
 void listofPrjEmpAssignment::listAllCompleteProjects()
 {
+	// creating employeeslist and project list to use in the loop so we can get the names and ids
+	ProjectList pl;
+	EmployeeList el;
+	Employee e;
+	Project p;
+	int index;
+	for (int i = 0; i < list.size(); i++)
+	{
+		// these functions we created return emoployee and project at a given index 
+		if (list[i].getStatus == 1)
+		{
+			// get the index of the "complete" project from the projectlist vector
+			// and use it to return that project
+			index = pl.getIndexUsingID(list[i].getpID());
+			p = pl.getProject(index);
+			cout << "Project ID: " << p.getID() << "  Project Title: " << p.getTitle() << endl;
+			cout << "Employees working on that project:- \n";
+			// use this functino to print them 
+			EmployeesWorkingOnProject(list[i].getpID());
+		}
+	}
 }
 
 void listofPrjEmpAssignment::listAllIncompleteProjects()
@@ -615,9 +786,9 @@ void listofPrjEmpAssignment::listAllIncompleteProjects()
 	for (int i = 0; i < list.size(); i++)
 	{
 		// these functions we created return emoployee and project at a given index 
-		if (list[i].getStatus() == false)
+		if (list[i].getStatus == 0)
 		{
-			// get the index of the "completed" project from the projectlist vector
+			// get the index of the "incomplete" project from the projectlist vector
 			// and use it to return that project
 			index = pl.getIndexUsingID(list[i].getpID());
 			p = pl.getProject(index);
@@ -629,6 +800,28 @@ void listofPrjEmpAssignment::listAllIncompleteProjects()
 	}
 }
 
+
+void listofPrjEmpAssignment::deleteEmpPrjAss(Employee e, Project b)
+{
+	int index;
+	string myeid, mypid;
+	// check if these exist
+	index = isEmpPrjInList(e.getID(), b.getID());
+	while (index == -1)
+	{
+		cout << "Error: the employee project assingment doesn't exist. Enter the ID's again: \n";
+		cin >> myeid;
+		// set the new values 
+		e.setID(myeid);
+		cin >> mypid;
+		b.setID(mypid);
+		// check for index again to see if we run the loop again.
+		index = isEmpPrjInList(e.getID(), b.getID);
+	}
+	// delete this assingment 
+	list.erase(list.begin() + index);
+}
+
 void main() {
 
 	char x;
@@ -638,6 +831,8 @@ void main() {
 	ProjectList plist;
 	ProjectEmployeeAssignment peassign;
 	listofPrjEmpAssignment peassignlist;
+	string eID, pID, name, title;
+	int index, mys;
 
 	cout << "Enter the letter corresponding to the command to initiate it : " << endl;
 
@@ -649,28 +844,31 @@ void main() {
 		cout << "d) List all projects (project name & ID)" << endl;
 		cout << "e) List all completed projects (Employee’s name & ID, project’s name & ID)" << endl;
 		cout << "f) List all incomplete projects (Employee’s name & ID, project’s name & ID)" << endl;
-		cout << "g) Search for a given employee or project by ID or name" << endl;
-		cout << "h) Assign an employee to a project (if not assigned already)" << endl;
-		cout << "i) Set a project as complete or incomplete for a given employee" << endl;
+		cout << "g) Search for a given employee by ID" << endl;
+		cout << "h) Search for a given employee by name" << endl;
+		cout << "i) Search for a given project by ID " << endl;
+		cout << "j) Search for a given project by title" << endl;
+		cout << "k) Assign an employee to a project (if not assigned already)" << endl;
+		cout << "L) Set a project as complete or incomplete for a given employee" << endl;
 		cout << "Press any letter other than the mentioned ones to exit the program" << endl;
 
 		if (x == 'a') {
-			string name, ID;
 			cout << "Enter name and ID of new Employee" << endl;
-			cin >> name >> ID;
+			cin >> eID;
+			cin.ignore(1000, '\n');
+			getline(cin, name);
 			emp.setName(name);
-			emp.setID(ID);
+			emp.setID(eID);
 			elist.addEmployee(emp);
-
 		}
 		else if (x == 'b') {
-
-			string title, ID;
 			cout << "Enter title and ID of new Project" << endl;
-			cin >> title >> ID;
+			cin >> pID;
+			cin.ignore(1000, '\n');
+			getline(cin, title);
 			prj.setTitle(title);
-			prj.setID(ID);
-
+			prj.setID(pID);
+			plist.addProject(prj);
 		}
 		else if (x == 'c') {
 
@@ -694,30 +892,81 @@ void main() {
 		}
 		else if (x == 'g') {
 
-			//in need for a function that searches for a given employee or project by id or name
+			cout << "Enter the employee ID: ";
+			cin >> eID;
+			index = elist.getIndexUsingID(eID);
+			emp = elist.getEmployee(index);
+			cout << "Name: " << emp.getName() << " ID: " << emp.getID() << endl;
 
 		}
 		else if (x == 'h') {
 
-			//needs a function that checks if the employee is assigned to a particular project or not
-			//in addition, it needs to check if employee and project exist
+			cout << "Enter the employee name: ";
+			getline(cin, name);
+			index = elist.getIndexUsingName(name);
+			emp = elist.getEmployee(index);
+			cout << "Name: " << emp.getName() << " ID: " << emp.getID() << endl;
+
 
 		}
 		else if (x == 'i') {
 
+			cout << "Enter the project ID: ";
+			cin >> pID;
+			index = plist.getIndexUsingID(pID);
+			prj = plist.getProject(index);
+			cout << "Title: " << prj.getTitle() << " ID: " << prj.getID() << endl;
+
+
+		}
+
+		else if (x == 'j')
+		{
+			cout << "Enter the project title: ";
+			getline(cin, title);
+			index = plist.getIndexUsingTitle(title);
+			prj = plist.getProject(index);
+			cout << "Title: " << prj.getTitle() << " ID: " << prj.getID() << endl;
+
+		}
+		else if (x == 'k')
+		{
+			cout << "Enter the employee ID: ";
+			cin >> eID;
+
+			index = elist.getIndexUsingID(eID);
+			emp = elist.getEmployee(index);
+
+			cout << "Enter the project ID:";
+			cin >> pID;
+
+			index = plist.getIndexUsingID(pID);
+			prj = plist.getProject(index);
+
+			peassignlist.addEmpPrjAssignment(emp, prj);
+		}
+		else if (x == 'l')
+		{
+			cout << "Enter the project ID:";
+			cin >> pID;
+			index = plist.getIndexUsingID(pID);
+			prj = plist.getProject(index);
+			cout << "Enter the status you want to set this prohject as, 0 for incomplete and 1 for complete: ";
+			cin >> mys;
+			while ((mys != 1) && (mys != 0))
+			{
+				cout << "Error, you enetered a value other than 0 or 1, enter again: ";
+				cin >> mys;
+			}
+			peassignlist.setProjectStatus(prj, mys);
 			//still incomplete, needs project locator so that status can be changed
-			int stat = -1;
-			cout << "Enter 0 or 1 for the project status : ";
-			while (!(stat == 0 || stat == 1)) cin >> stat;
-			peassign.setStatus(stat);
 			// it should be better using this function: peassignlist.markProjectAsCompleted();
 
+			// i think it works now. 
 		}
 		else {
 			cout << "Exiting the program" << endl;
 			exit(1);
 		}
-
 	}
-
 }
