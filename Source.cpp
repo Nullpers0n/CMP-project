@@ -160,7 +160,7 @@ EmployeeList::EmployeeList()
 
 void EmployeeList::addEmployee(Employee e)
 {
-	listofEmployees.push_back(e);
+	listofEmployees.push_back(e);  //should we check if the employee already exists?
 }
 
 void EmployeeList::deleteEmployee(string myid)
@@ -173,6 +173,9 @@ void EmployeeList::deleteEmployee(string myid)
 		index = getIndexUsingID(myid);
 	}
 	listofEmployees.erase(listofEmployees.begin() + index);
+
+	//maybe delete the projects that he/she was working on too?
+
 }
 
 Employee EmployeeList::getEmployee(int index)
@@ -216,11 +219,14 @@ void EmployeeList::listEmployees()
 
 EmployeeList::~EmployeeList()
 {
-	// please do the destrcutor i dont know how to do it
+
+	ofstream mycout;
+	mycout.open("Employeelist.txt");
+	//printing back to the txt file and (erasing all the components inside the destructor?)
+	mycout.flush();
+	mycout.close();
+
 }
-
-
-
 
 //-----------------------------------------
 
@@ -245,7 +251,6 @@ public:
 					// function used to check if its already in the list so we don't add it again. 
 	int isItInList(Project p);
 
-
 };
 
 // functions definition of projectlist
@@ -265,6 +270,7 @@ int ProjectList::isItInList(Project p)
 // ------add project function
 void ProjectList::addProject(Project p)
 {
+	// if we assume that the Project's private components are empty, we need more statements 
 	int i;
 	// check if it exists
 	i = isItInList(p);
@@ -325,7 +331,7 @@ ProjectList::ProjectList()
 		p.setID(myid);
 		getline(mycin, mytitle);
 		p.setTitle(mytitle);
-		addProject(p);
+		addProject(p); //good
 		getline(mycin, myid, ' ');
 	}
 	mycin.close();
@@ -386,8 +392,13 @@ void ProjectList::listProjects()
 	}
 }
 
-//-----------------------------------------
+ProjectList::~ProjectList() {
 
+	//destructor
+
+}
+
+//-----------------------------------------
 
 class ProjectEmployeeAssignment {
 private:
@@ -405,6 +416,8 @@ public:
 	void seteID(string myeid);
 	void setStatus(bool mys);
 	bool isCompleted(string s);
+	~ProjectEmployeeAssignment();
+	//a destructor is needed
 	//…add other functions as needed
 };
 ProjectEmployeeAssignment::ProjectEmployeeAssignment()
