@@ -5,10 +5,10 @@
 
 using namespace std;
 
-class Employee;
-class Project;
 class EmployeeList;
 class ProjectList;
+class Employee;
+class Project;
 class ProjectEmployeeAssignment;
 class listofPrjEmpAssignment;
 // non member function used in some of the classes to print error. 
@@ -35,6 +35,123 @@ public:
 	//…add other functions as 
 
 };
+
+class Project {
+private:
+	string ID, title;
+	//…add more attributes as needed
+public:
+	Project();
+	Project(string mytitle, string myid);
+	string getID();
+	string getTitle();
+	void setID(string myid);
+	void setTitle(string mytitle);
+	//…add other functions as needed
+};
+
+class ProjectEmployeeAssignment {
+private:
+	string pID, eID;
+	int status;
+	//…add more attributes as needed
+public:
+	ProjectEmployeeAssignment();
+	ProjectEmployeeAssignment
+	(string mypID, string myeID, int complete = false);
+	string getpID();
+	string geteID();
+	int getStatus();
+	void setpID(string mypid);
+	void seteID(string myeid);
+	void setStatus(int mys);
+	bool isCompleted(int s);
+	// ~ProjectEmployeeAssignment();
+	//a destructor is needed
+	//…add other functions as needed
+};
+
+
+class EmployeeList
+{
+private:
+	vector<Employee> listofEmployees;
+	string empFileName;
+	//…add more attributes as needed 
+public:
+	EmployeeList(); //reads from the file
+	void addEmployee(Employee e);
+	void deleteEmployee(string myid);
+	Employee getEmployee(int index);
+	int getIndexUsingID(string myid);
+	int getIndexUsingName(string myname);
+	void listEmployees();
+	~EmployeeList(); //writes back to the same input file
+					 //…add other functions as needed
+
+					 // function to check if employee is in list before adding. 
+	int IsItInList(Employee e);
+};
+
+class ProjectList {
+private:
+	vector<Project> listofProjects;
+	string prjFileName;
+	//…add more attributes as needed
+public:
+	ProjectList(); //reads from the file
+	void addProject(Project p);
+	void deleteProject(string myid);
+	Project getProject(int index);
+	string getProjectTitle(string ID);
+	string getProjectID(string title);
+	int getIndexUsingID(string myid);
+	int getIndexUsingTitle(string mytitle);
+	void listProjects();
+	~ProjectList(); //writes back to the same input file
+					//…add other functions as needed
+
+					// function used to check if its already in the list so we don't add it again. 
+	int isItInList(Project p);
+
+};
+
+
+class listofPrjEmpAssignment {
+private:
+	vector <ProjectEmployeeAssignment> list;
+	string epfname = "epa.txt";
+	//…add more attributes as needed
+public:
+	listofPrjEmpAssignment();//reads from the file
+	void addEmpPrjAssignment(Employee e, Project b);
+	void setProjectStatus(Project b, int mys);
+	int isEmpInList(string myeid);
+	int isPrjInList(string mypid);
+	int isEmpPrjInList(string myeid, string mypid);
+	void listAllIncompleteProjects();
+	void listAllCompleteProjects();
+	void listAllProjectsAssignments();
+	~listofPrjEmpAssignment();//writes back to the file
+							  //…add other functions as needed
+
+							  //function to list the Employees working on a certain project. 
+
+							  // function to delete a certin employee and project assingment. 
+	void EmployeesWorkingOnProject(string mypid);
+
+	void deleteEmpPrjAss(Employee e, Project b);
+
+	// function to set project as incomplete 
+
+	/*void markPrjAsIncomplete(Project b);*/
+
+	// functions to get an employee and proects from the list.
+	Employee getEmpFromList(int index);
+	Project getProjFromList(int index);
+};
+
+// -----------------------------------------------------
 //-------- constrcutor 
 Employee::Employee()
 {
@@ -70,19 +187,6 @@ string Employee::getName() {
 
 //-----------------------------------------------------------
 
-class Project {
-private:
-	string ID, title;
-	//…add more attributes as needed
-public:
-	Project();
-	Project(string mytitle, string myid);
-	string getID();
-	string getTitle();
-	void setID(string myid);
-	void setTitle(string mytitle);
-	//…add other functions as needed
-};
 Project::Project()
 {
 	ID = "0";
@@ -117,32 +221,12 @@ void Project::setTitle(string mytitle)
 
 //-----------------------------------------------------------
 
-class EmployeeList
-{
-private:
-	vector<Employee> listofEmployees;
-	string empFileName;
-	//…add more attributes as needed 
-public:
-	EmployeeList(); //reads from the file
-	void addEmployee(Employee e);
-	void deleteEmployee(string myid);
-	Employee getEmployee(int index);
-	int getIndexUsingID(string myid);
-	int getIndexUsingName(string myname);
-	void listEmployees();
-	~EmployeeList(); //writes back to the same input file
-					 //…add other functions as needed
-
-					 // function to check if employee is in list before adding. 
-	int IsItInList(Employee e);
-};
 
 int EmployeeList::IsItInList(Employee e)
 {
 	for (int i = 0; i < listofEmployees.size(); i++)
 	{
-		if (e.getID == listofEmployees[i].getID())
+		if (e.getID() == listofEmployees[i].getID())
 		{
 			return i;
 		}
@@ -167,9 +251,10 @@ EmployeeList::EmployeeList()
 	{
 		// pushing back employees
 		e.setID(myid);
+		mycin.ignore(1000, '\n');
 		getline(mycin, myname);
 		e.setName(myname);
-		addEmployee(e);
+		listofEmployees.push_back(e);
 		getline(mycin, myid, ' ');
 	}
 	mycin.close();
@@ -277,28 +362,6 @@ EmployeeList::~EmployeeList()
 
 //-----------------------------------------
 
-class ProjectList {
-private:
-	vector<Project> listofProjects;
-	string prjFileName;
-	//…add more attributes as needed
-public:
-	ProjectList(); //reads from the file
-	void addProject(Project p);
-	void deleteProject(string myid);
-	Project getProject(int index);
-	string getProjectTitle(string ID);
-	string getProjectID(string title);
-	int getIndexUsingID(string myid);
-	int getIndexUsingTitle(string mytitle);
-	void listProjects();
-	~ProjectList(); //writes back to the same input file
-					//…add other functions as needed
-
-					// function used to check if its already in the list so we don't add it again. 
-	int isItInList(Project p);
-
-};
 
 // functions definition of projectlist
 
@@ -376,9 +439,10 @@ ProjectList::ProjectList()
 	while (!mycin.eof())
 	{
 		p.setID(myid);
+		mycin.ignore(1000, '\n');
 		getline(mycin, mytitle);
 		p.setTitle(mytitle);
-		addProject(p); //good
+		listofProjects.push_back(p); //good
 		getline(mycin, myid, ' ');
 	}
 	mycin.close();
@@ -473,26 +537,7 @@ ProjectList::~ProjectList() {
 
 //-----------------------------------------
 
-class ProjectEmployeeAssignment {
-private:
-	string pID, eID;
-	int status;
-	//…add more attributes as needed
-public:
-	ProjectEmployeeAssignment();
-	ProjectEmployeeAssignment
-	(string mypID, string myeID, int complete = false);
-	string getpID();
-	string geteID();
-	int getStatus();
-	void setpID(string mypid);
-	void seteID(string myeid);
-	void setStatus(int mys);
-	bool isCompleted(int s);
-	// ~ProjectEmployeeAssignment();
-	//a destructor is needed
-	//…add other functions as needed
-};
+
 ProjectEmployeeAssignment::ProjectEmployeeAssignment()
 {
 	pID = "0";
@@ -541,39 +586,6 @@ bool ProjectEmployeeAssignment::isCompleted(int s)
 }
 //--------------------------------------
 
-class listofPrjEmpAssignment {
-private:
-	vector <ProjectEmployeeAssignment> list;
-	string epfname = "epa.txt";
-	//…add more attributes as needed
-public:
-	listofPrjEmpAssignment();//reads from the file
-	void addEmpPrjAssignment(Employee e, Project b);
-	void setProjectStatus(Project b, int mys);
-	int isEmpInList(string myeid);
-	int isPrjInList(string mypid);
-	int isEmpPrjInList(string myeid, string mypid);
-	void listAllIncompleteProjects();
-	void listAllCompleteProjects();
-	void listAllProjectsAssignments();
-	~listofPrjEmpAssignment();//writes back to the file
-							  //…add other functions as needed
-
-							  //function to list the Employees working on a certain project. 
-
-							  // function to delete a certin employee and project assingment. 
-	void EmployeesWorkingOnProject(string mypid);
-
-	void deleteEmpPrjAss(Employee e, Project b);
-
-	// function to set project as incomplete 
-
-	/*void markPrjAsIncomplete(Project b);*/
-
-	// functions to get an employee and proects from the list.
-	Employee getEmpFromList(int index);
-	Project getProjFromList(int index);
-};
 
 
 Employee listofPrjEmpAssignment::getEmpFromList(int index)
@@ -623,8 +635,25 @@ void listofPrjEmpAssignment::EmployeesWorkingOnProject(string mypid)
 			index = el.getIndexUsingID(list[i].geteID());
 			// so i can use it here to get that employee.
 			e = el.getEmployee(index);
-			cout << "Emplyee ID: " << e.getID() << "  Employee Name: " << e.getName() << endl;
+			cout << "Employee ID: " << e.getID() << "  Employee Name: " << e.getName() << endl;
 		}
+	}
+}
+
+void listofPrjEmpAssignment::listAllProjectsAssignments()
+{
+	Employee e; 
+	Project p;
+	EmployeeList el;
+	ProjectList pl;
+	int index; 
+	for (int i = 0; i < list.size(); i++)
+	{
+		index = pl.getIndexUsingID(list[i].getpID());
+		p = pl.getProject(index);
+		cout << "Project ID: " << p.getID() << "Project title: " << p.getTitle() << endl;
+		cout << "Employees working on this project: \n"; 
+		EmployeesWorkingOnProject(p.getID());
 	}
 }
 
@@ -678,19 +707,13 @@ listofPrjEmpAssignment::listofPrjEmpAssignment()
 	getline(mycin, myeid, ' ');
 	while (!mycin.eof())
 	{
+		mycin.ignore(1000, '\n');
 		getline(mycin, myeid, ' ');
 		cin >> mys;
 		epa.seteID(myeid);
 		epa.setpID(mypid);
 		// if there is a one in there push it back as true.
-		if (epa.isCompleted(mys) == 1)
-		{
-			epa.setStatus(1);
-		}
-		else
-		{
-			epa.setStatus(0);
-		}
+		epa.setStatus(mys);
 		list.push_back(epa);
 		getline(mycin, myeid, ' ');
 	}
@@ -761,7 +784,7 @@ void listofPrjEmpAssignment::listAllCompleteProjects()
 	for (int i = 0; i < list.size(); i++)
 	{
 		// these functions we created return emoployee and project at a given index 
-		if (list[i].getStatus == 1)
+		if (list[i].getStatus() == 1)
 		{
 			// get the index of the "complete" project from the projectlist vector
 			// and use it to return that project
@@ -786,7 +809,7 @@ void listofPrjEmpAssignment::listAllIncompleteProjects()
 	for (int i = 0; i < list.size(); i++)
 	{
 		// these functions we created return emoployee and project at a given index 
-		if (list[i].getStatus == 0)
+		if (list[i].getStatus() == 0)
 		{
 			// get the index of the "incomplete" project from the projectlist vector
 			// and use it to return that project
@@ -816,10 +839,26 @@ void listofPrjEmpAssignment::deleteEmpPrjAss(Employee e, Project b)
 		cin >> mypid;
 		b.setID(mypid);
 		// check for index again to see if we run the loop again.
-		index = isEmpPrjInList(e.getID(), b.getID);
+		index = isEmpPrjInList(e.getID(), b.getID());
 	}
 	// delete this assingment 
 	list.erase(list.begin() + index);
+}
+listofPrjEmpAssignment::~listofPrjEmpAssignment()
+{
+	ofstream mycout("epa.txt");
+	if (mycout.fail())
+	{
+		cout << "Error: EPA file opening failed... exsiting.\n";
+		exit(6);
+	}
+	for (int i = 0; i < list.size();i++)
+	{
+		mycout << list[i].geteID() << " " << list[i].getpID() << " " << list[i].getStatus() << endl;
+	}
+	mycout.flush();
+	mycout.close();
+
 }
 
 void main() {
@@ -834,10 +873,9 @@ void main() {
 	string eID, pID, name, title;
 	int index, mys;
 
-	cout << "Enter the letter corresponding to the command to initiate it : " << endl;
-
-	while (cin >> x) {
-
+	while (true) 
+	{
+		
 		cout << "a) Add a new employee to the list of employees" << endl;
 		cout << "b) Add a new project to the list of projects" << endl;
 		cout << "c) List all employees and the projects they are assigned to (if any)" << endl;
@@ -851,7 +889,8 @@ void main() {
 		cout << "k) Assign an employee to a project (if not assigned already)" << endl;
 		cout << "L) Set a project as complete or incomplete for a given employee" << endl;
 		cout << "Press any letter other than the mentioned ones to exit the program" << endl;
-
+		cout << "Enter the letter of the choice to choose it: ";
+		cin >> x; 
 		if (x == 'a') {
 			cout << "Enter name and ID of new Employee" << endl;
 			cin >> eID;
