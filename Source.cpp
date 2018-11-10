@@ -758,12 +758,12 @@ void listofPrjEmpAssignment::setProjectStatus(Project b, int mys, Employee e)
 {
 	string ID;
 	int index;  //we got a problem in here // SOLVED (I THINK)
-	index = isPrjInList(e.getID(), b.getID());
+	index = isEmpPrjInList(e.getID(), b.getID());
 	while (index == -1)
 	{
 		cout << "Error: Assingment doesn't exist. Enter the ID again: \n";
 		b.setID(ID);
-		index = isPrjInList(e.getID(), b.getID());
+		index = isEmpPrjInList(e.getID(), b.getID());
 	}
 	if (mys == 1)
 	{
