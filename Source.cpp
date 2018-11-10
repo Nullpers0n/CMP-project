@@ -362,11 +362,6 @@ void EmployeeList::listEmployees()
 EmployeeList::~EmployeeList()
 {
 	ofstream mycout("Employeelist.txt");
-	if (mycout.fail())
-	{
-		cout << "Error: Employee list file opening failed... Existing\n";
-		exit(6);
-	}
 	for (int i = 0; i < listofEmployees.size(); i++)
 	{
 		mycout << listofEmployees[i].getID() << " " << listofEmployees[i].getName() << endl;
@@ -1029,7 +1024,7 @@ void main() {
 		}
 		else {
 			cout << "Exiting the program" << endl;
-			exit(1);
+			break;
 		}
 	}
 }
