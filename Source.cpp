@@ -129,7 +129,7 @@ private:
 public:
 	listofPrjEmpAssignment();//reads from the file
 	void addEmpPrjAssignment(Employee e, Project b);
-	void setProjectStatus(Project b, int mys);
+	void setProjectStatus(Project b, int mys, Employee e);
 	int isEmpInList(string myeid);
 	int isPrjInList(string mypid);
 	int isEmpPrjInList(string myeid, string mypid);
@@ -754,7 +754,7 @@ void listofPrjEmpAssignment::addEmpPrjAssignment(Employee e, Project b)
 	}
 
 }
-void listofPrjEmpAssignment::setProjectStatus(Project b, int mys)
+void listofPrjEmpAssignment::setProjectStatus(Project b, int mys, Employee e)
 {
 	string ID;
 	int index;  //we got a problem in here // SOLVED (I THINK)
@@ -763,7 +763,7 @@ void listofPrjEmpAssignment::setProjectStatus(Project b, int mys)
 	{
 		cout << "Error: Assingment doesn't exist. Enter the ID again: \n";
 		b.setID(ID);
-		index = isPrjInList(b.getID());
+		index = isPrjInList(e.getID(), b.getID());
 	}
 	if (mys == 1)
 	{
@@ -904,7 +904,7 @@ void main() {
 		cout << "i) Search for a given project by ID " << endl;
 		cout << "j) Search for a given project by title" << endl;
 		cout << "k) Assign an employee to a project (if not assigned already)" << endl;
-		cout << "L) Set a project as complete or incomplete for a given employee" << endl;
+		cout << "l) Set a project as complete or incomplete for a given employee" << endl;
 		cout << "Press any letter other than the mentioned ones to exit the program" << endl;
 		cout << "\n\n";
 		cout << "Enter the letter of the choice to choose it: ";
@@ -1007,8 +1007,12 @@ void main() {
 		{
 			cout << "Enter the project ID:";
 			cin >> pID;
+			cout << "Enter ID of the employee that is working on the project:";
+			cin >> eID;
 			index = plist.getIndexUsingID(pID);
 			prj = plist.getProject(index);
+			index = elist.getIndexUsingID(eID);
+			emp = elist.getEmployee(index);
 			cout << "Enter the status you want to set this prohject as, 0 for incomplete and 1 for complete: ";
 			cin >> mys;
 			while ((mys != 1) && (mys != 0))
@@ -1016,7 +1020,7 @@ void main() {
 				cout << "Error, you enetered a value other than 0 or 1, enter again: ";
 				cin >> mys;
 			}
-			peassignlist.setProjectStatus(prj, mys);
+			peassignlist.setProjectStatus(prj, mys, emp);
 			//still incomplete, needs project locator so that status can be changed
 			// it should be better using this function: peassignlist.markProjectAsCompleted();
 
