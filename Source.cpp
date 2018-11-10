@@ -91,6 +91,9 @@ public:
 
 					 // function to check if employee is in list before adding. 
 	int IsItInList(Employee e);
+
+	// a function that returnes a pointer to the begining of the vector. 
+	Employee* getPointerToVector();
 };
 
 class ProjectList {
@@ -114,6 +117,7 @@ public:
 					// function used to check if its already in the list so we don't add it again. 
 	int isItInList(Project p);
 
+	Project* getPointerToVector();
 };
 
 
@@ -221,17 +225,11 @@ void Project::setTitle(string mytitle)
 
 //-----------------------------------------------------------
 
-
-int EmployeeList::IsItInList(Employee e)
+Employee* EmployeeList::getPointerToVector()
 {
-	for (int i = 0; i < listofEmployees.size(); i++)
-	{
-		if (e.getID() == listofEmployees[i].getID())
-		{
-			return i;
-		}
-	}
-	return -1;
+	Employee* ptr_e; 
+	ptr_e = &listofEmployees[0];
+	return ptr_e;
 }
 
 EmployeeList::EmployeeList()
@@ -246,19 +244,31 @@ EmployeeList::EmployeeList()
 	Employee e;
 	// the space char in getline is to prevent the second getline (the one for name)
 	// to cin the space as well 
-	getline(mycin, myid, ' ');
+	getline(mycin,myid, ' ');
 	while (!mycin.eof())
 	{
 		// pushing back employees
 		e.setID(myid);
-		mycin.ignore(1000, '\n');
 		getline(mycin, myname);
 		e.setName(myname);
 		listofEmployees.push_back(e);
-		getline(mycin, myid, ' ');
+		getline(mycin,myid, ' ');
 	}
 	mycin.close();
 }
+int EmployeeList::IsItInList(Employee e)
+{
+	for (int i = 0; i < listofEmployees.size(); i++)
+	{
+		if (e.getID() == listofEmployees[i].getID())
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
+
 
 void EmployeeList::addEmployee(Employee e)
 {
@@ -307,9 +317,7 @@ void EmployeeList::deleteEmployee(string myid)
 
 Employee EmployeeList::getEmployee(int index)
 {
-	Employee e;
-	e = listofEmployees[index];
-	return  e;
+	return  listofEmployees[index];
 }
 
 int EmployeeList::getIndexUsingID(string myid)
@@ -354,7 +362,7 @@ EmployeeList::~EmployeeList()
 	}
 	for (int i = 0; i < listofEmployees.size(); i++)
 	{
-		cout << listofEmployees[i].getID() << " " << listofEmployees[i].getName() << endl;
+		mycout << listofEmployees[i].getID() << " " << listofEmployees[i].getName() << endl;
 	}
 	mycout.flush();
 	mycout.close();
@@ -364,6 +372,13 @@ EmployeeList::~EmployeeList()
 
 
 // functions definition of projectlist
+
+Project * ProjectList::getPointerToVector()
+{
+	Project* ptr_p;
+	ptr_p = &listofProjects[0];
+	return ptr_p;
+}
 
 int ProjectList::isItInList(Project p)
 {
@@ -439,7 +454,6 @@ ProjectList::ProjectList()
 	while (!mycin.eof())
 	{
 		p.setID(myid);
-		mycin.ignore(1000, '\n');
 		getline(mycin, mytitle);
 		p.setTitle(mytitle);
 		listofProjects.push_back(p); //good
@@ -529,7 +543,7 @@ ProjectList::~ProjectList() {
 	}
 	for (int i = 0; i < listofProjects.size(); i++)
 	{
-		cout << listofProjects[i].getID() << " " << listofProjects[i].getTitle() << endl;
+		mycout << listofProjects[i].getID() << " " << listofProjects[i].getTitle() << endl;
 	}
 	mycout.flush();
 	mycout.close();
@@ -626,8 +640,10 @@ void listofPrjEmpAssignment::EmployeesWorkingOnProject(string mypid)
 {
 	EmployeeList el;
 	Employee e;
+	Employee* ptr; 
+	ptr = el.getPointerToVector();
 	int index;
-	for (int i = 0; list.size(); i++)
+	for (int i = 0; i < list.size(); i++)
 	{
 		if (list[i].getpID() == mypid)
 		{
@@ -641,19 +657,17 @@ void listofPrjEmpAssignment::EmployeesWorkingOnProject(string mypid)
 }
 
 void listofPrjEmpAssignment::listAllProjectsAssignments()
-{
-	Employee e; 
+{ 
 	Project p;
-	EmployeeList el;
 	ProjectList pl;
 	int index; 
 	for (int i = 0; i < list.size(); i++)
 	{
 		index = pl.getIndexUsingID(list[i].getpID());
 		p = pl.getProject(index);
-		cout << "Project ID: " << p.getID() << "Project title: " << p.getTitle() << endl;
+		cout << "Project ID: " << p.getID() << " Project title: " << p.getTitle() << endl;
 		cout << "Employees working on this project: \n"; 
-		EmployeesWorkingOnProject(p.getID());
+		EmployeesWorkingOnProject(list[i].getpID());
 	}
 }
 
@@ -694,7 +708,7 @@ int listofPrjEmpAssignment::isPrjInList(string mypid)
 
 listofPrjEmpAssignment::listofPrjEmpAssignment()
 {
-	ifstream mycin(epfname);
+	ifstream mycin("epa.txt");
 	if (mycin.fail())
 	{
 		cout << "Error: opening employee project assingment file failed... Exiting...\n";
@@ -707,14 +721,13 @@ listofPrjEmpAssignment::listofPrjEmpAssignment()
 	getline(mycin, myeid, ' ');
 	while (!mycin.eof())
 	{
-		mycin.ignore(1000, '\n');
-		getline(mycin, myeid, ' ');
-		cin >> mys;
 		epa.seteID(myeid);
+		getline(mycin, mypid, ' ');
 		epa.setpID(mypid);
-		// if there is a one in there push it back as true.
+		mycin >> mys;
 		epa.setStatus(mys);
 		list.push_back(epa);
+		mycin.ignore(1000, '\n');
 		getline(mycin, myeid, ' ');
 	}
 	mycin.close();
@@ -872,10 +885,11 @@ void main() {
 	listofPrjEmpAssignment peassignlist;
 	string eID, pID, name, title;
 	int index, mys;
-
-	while (true) 
-	{
-		
+	elist.listEmployees(); 
+	plist.listProjects();
+	peassignlist.listAllProjectsAssignments();
+	while (true){
+		cout << "\n\n\n---------------\n\n\n";
 		cout << "a) Add a new employee to the list of employees" << endl;
 		cout << "b) Add a new project to the list of projects" << endl;
 		cout << "c) List all employees and the projects they are assigned to (if any)" << endl;
@@ -889,8 +903,10 @@ void main() {
 		cout << "k) Assign an employee to a project (if not assigned already)" << endl;
 		cout << "L) Set a project as complete or incomplete for a given employee" << endl;
 		cout << "Press any letter other than the mentioned ones to exit the program" << endl;
+		cout << "\n\n";
 		cout << "Enter the letter of the choice to choose it: ";
-		cin >> x; 
+		cin >> x;
+		cout << endl;
 		if (x == 'a') {
 			cout << "Enter name and ID of new Employee" << endl;
 			cin >> eID;
