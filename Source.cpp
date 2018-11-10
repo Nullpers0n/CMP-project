@@ -260,7 +260,7 @@ int EmployeeList::IsItInList(Employee e)
 {
 	for (int i = 0; i < listofEmployees.size(); i++)
 	{
-		if (e.getID() == listofEmployees[i].getID())
+		if (e.getID() == listofEmployees[i].getID() ||(e.getName()== listofEmployees[i].getName()))
 		{
 			return i;
 		}
@@ -277,11 +277,12 @@ void EmployeeList::addEmployee(Employee e)
 	if (i == -1)
 	{
 		listofEmployees.push_back(e);
+		cout << "Employee added.\n";
 	}
 	//should we check if the employee already exists?
 	else
 	{
-		cout << "Employee already exists.\n";
+		cout << "Employee with this ID or name already exists.\n";
 	}
 }
 
@@ -317,7 +318,13 @@ void EmployeeList::deleteEmployee(string myid)
 
 Employee EmployeeList::getEmployee(int index)
 {
-	return  listofEmployees[index];
+	
+	if ((index < 0) || (index >= listofEmployees.size()))
+	{
+		cout << "Error, index is out of range. Returning the the first employee in the list instead. \n";
+		return listofEmployees[0];
+	}
+	else return  listofEmployees[index];
 }
 
 int EmployeeList::getIndexUsingID(string myid)
@@ -382,9 +389,9 @@ Project * ProjectList::getPointerToVector()
 
 int ProjectList::isItInList(Project p)
 {
-	for (int i = 0; listofProjects.size(); i++)
+	for (int i = 0; i< listofProjects.size(); i++)
 	{
-		if ((p.getID() == listofProjects[i].getID()) && (p.getTitle() == listofProjects[i].getTitle()))
+		if ((p.getID() == listofProjects[i].getID()) || (p.getTitle() == listofProjects[i].getTitle()))
 		{
 			return i;
 		}
@@ -403,11 +410,12 @@ void ProjectList::addProject(Project p)
 	if (i == -1)
 	{
 		listofProjects.push_back(p);
+		cout << "Project added.\n";
 	}
 	// if it exists dont add it.
 	else
 	{
-		cout << "Project already exists.\n";
+		cout << "Project with this ID or title already exists.\n";
 	}
 
 }
@@ -885,11 +893,11 @@ void main() {
 	listofPrjEmpAssignment peassignlist;
 	string eID, pID, name, title;
 	int index, mys;
-	elist.listEmployees(); 
+	/*elist.listEmployees(); 
 	plist.listProjects();
-	peassignlist.listAllProjectsAssignments();
+	peassignlist.listAllProjectsAssignments();*/
 	while (true){
-		cout << "\n\n\n---------------\n\n\n";
+		cout << "--------------------------\n\n\n";
 		cout << "a) Add a new employee to the list of employees" << endl;
 		cout << "b) Add a new project to the list of projects" << endl;
 		cout << "c) List all employees and the projects they are assigned to (if any)" << endl;
@@ -954,15 +962,14 @@ void main() {
 			cout << "Name: " << emp.getName() << " ID: " << emp.getID() << endl;
 
 		}
-		else if (x == 'h') {
-
+		else if (x == 'h') 
+		{
 			cout << "Enter the employee name: ";
-			getline(cin, name);
+			cin.ignore(1000, '\n');
+			getline(cin, name);	
 			index = elist.getIndexUsingName(name);
 			emp = elist.getEmployee(index);
 			cout << "Name: " << emp.getName() << " ID: " << emp.getID() << endl;
-
-
 		}
 		else if (x == 'i') {
 
@@ -978,6 +985,7 @@ void main() {
 		else if (x == 'j')
 		{
 			cout << "Enter the project title: ";
+			cin.ignore(1000, '\n');
 			getline(cin, title);
 			index = plist.getIndexUsingTitle(title);
 			prj = plist.getProject(index);
