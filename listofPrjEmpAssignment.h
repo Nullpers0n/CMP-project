@@ -37,6 +37,9 @@ public:
 	// input: project ID
 	// output: int, the index of the first instance it in the vector.
 	int isPrjInList(string mypid);
+	//purpose : checks if an employee and project are both in the list together
+	//input : string myeid and mypid that the user inputs
+	//output : returns the index at which they are in there
 	int isEmpPrjInList(string myeid, string mypid);
 	// purpose: to print all the projects that are not completed. 
 	// inpit: nothing
