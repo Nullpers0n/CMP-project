@@ -4,12 +4,22 @@
 using namespace std;
 
 //--------------------------------------
+
+
+// purpose:  this functionn puts the projects assgined to employees into a vector of project.
+// inputL project object
+// ouput: nothing. 
 void listofPrjEmpAssignment::putPrjsInList(Project myp)
 {
 	/*creating employeeslist and project list to use in the loop so we can get the names and ids*/
 	ProjectList pl;
 	Employee e;
 	Project p;
+	// since the project list (pl) here will have its own constrcutor (diff from the one in main) 
+	// so if we add an project in main, this will not be updated. To solve this, we pass an project object
+	// and check if the ID and title are not set by a default constrcutr. 
+	// if they are not, then push it back to this project list vector (the new project we added in main)
+	// else it means that this call is being called at the begining of main. no need to push back. 
 	if ((myp.getID() != "0") && (myp.getTitle() != "NULL"))
 	{
 		pl.addProject(myp);
@@ -50,6 +60,9 @@ void listofPrjEmpAssignment::putPrjsInList(Project myp)
 	}
 }
 
+// Prps: put the employees assgined to a project into a vector of employees. 
+// input: employee object
+// output: nothing
 void listofPrjEmpAssignment::putEmpsInList(Employee mye)
 {
 	/*creating employeeslist and project list to use in the loop so we can get the names and ids*/
@@ -57,6 +70,7 @@ void listofPrjEmpAssignment::putEmpsInList(Employee mye)
 	EmployeeList el;
 	Employee e;
 	Project p;
+	// same story as in the putPrjsInList function. 
 	if ((mye.getID() != "00") && (mye.getName() != "NULL"))
 	{
 		el.addEmployee(mye);
@@ -99,7 +113,10 @@ void listofPrjEmpAssignment::putEmpsInList(Employee mye)
 }
 
 
-
+//purpose: checks if a project is complete it by looping through all the employee's parts , if parts are complete
+// then the project is complete and returnes true else it returnse false
+// input: string project ID
+// output: bool values true or false. 
 bool listofPrjEmpAssignment::isPrjCmp(string pID)
 {
 	for (int i = 0; i < list.size(); i++)
@@ -113,6 +130,9 @@ bool listofPrjEmpAssignment::isPrjCmp(string pID)
 	return true;
 }
 
+// purpose: prints the prjects assigned to a certain empployee
+// input : string emoployee ID.
+// output: nothing
 void listofPrjEmpAssignment::PrjssAssignedToEmp(string myeid)
 {
 	vector <Project> projects;
@@ -144,6 +164,9 @@ void listofPrjEmpAssignment::PrjssAssignedToEmp(string myeid)
 	}
 }
 
+// purpose: prints the employees assgined to a certain project
+// inputs: string project ID
+// output: nothing 
 void listofPrjEmpAssignment::EmpsAssignedToPrj(string mypid)
 {
 	vector <Employee> employees;
@@ -175,6 +198,9 @@ void listofPrjEmpAssignment::EmpsAssignedToPrj(string mypid)
 	}
 }
 
+// purpose: to get an employee from the project employee assingment vector. 
+// input: index of that employee in the vector.
+// output: returnes an employee object. 
 Employee listofPrjEmpAssignment::getEmpFromList(int index)
 {
 	EmployeeList el;
@@ -192,6 +218,10 @@ Employee listofPrjEmpAssignment::getEmpFromList(int index)
 	return e;
 }
 
+
+// purpose: to get an project from the project employee assingment vector. 
+// input: index of that project in the vector.
+// output: returnes a project object. 
 Project listofPrjEmpAssignment::getProjFromList(int index)
 {
 	Project p;
@@ -210,21 +240,11 @@ Project listofPrjEmpAssignment::getProjFromList(int index)
 }
 
 
-void listofPrjEmpAssignment::listAllProjectsAssignments()
-{
-	Project p;
-	ProjectList pl;
-	int index;
-	for (int i = 0; i < list.size(); i++)
-	{
-		index = pl.getIndexUsingID(list[i].getpID());
-		p = pl.getProject(index);
-		cout << "Project ID: " << p.getID() << " Project title: " << p.getTitle() << endl;
-		cout << "Employees working on this project: \n";
-		EmpsAssignedToPrj(list[i].getpID());
-	}
-}
 
+//purpose: to check if a certain employee project assignment exists or not in the project employee 
+// vector
+// input: strings employee and project ID.
+// ouput: integer the index of that assignment in the vector. 
 int listofPrjEmpAssignment::isEmpPrjInList(string myeid, string mypid)
 {
 	for (int i = 0; i < list.size(); i++)
@@ -237,6 +257,9 @@ int listofPrjEmpAssignment::isEmpPrjInList(string myeid, string mypid)
 	return -1;
 }
 
+// purpose: to check if an employee is in the emp prj assignment 
+// input: employee ID
+// output: int, the index of the first instance it in the vector. 
 int listofPrjEmpAssignment::isEmpInList(string myeid)
 {
 	for (int i = 0; i < list.size(); i++)
@@ -248,6 +271,10 @@ int listofPrjEmpAssignment::isEmpInList(string myeid)
 	}
 	return -1;
 }
+
+// purpose: to check if a project is in the emp prj assignment 
+// input: project ID
+// output: int, the index of the first instance it in the vector.
 int listofPrjEmpAssignment::isPrjInList(string mypid)
 {
 	for (int i = 0; i < list.size(); i++)
@@ -260,6 +287,9 @@ int listofPrjEmpAssignment::isPrjInList(string mypid)
 	return -1;
 }
 
+// purpose: constrcutor, reads from the employee project assignemnt folder and stores them into a vector
+// input:L nothing
+// output: nothong 
 listofPrjEmpAssignment::listofPrjEmpAssignment()
 {
 	ifstream mycin("epa.txt");
@@ -287,6 +317,9 @@ listofPrjEmpAssignment::listofPrjEmpAssignment()
 	mycin.close();
 }
 
+// purpose: to assign an employee to a project and adds them to the emp prj assignment list vector. 
+// input: objects project and employee.
+// output: nothing 
 void listofPrjEmpAssignment::addEmpPrjAssignment(Employee e, Project b)
 {
 	ProjectEmployeeAssignment epa;
@@ -305,6 +338,10 @@ void listofPrjEmpAssignment::addEmpPrjAssignment(Employee e, Project b)
 		cout << "Assignment already exists.\n";
 	}
 }
+
+// purpose: set the status of an employees part in a project (complete or incomplete)
+// input: objects prject and employee and integer status (0 or 1) 
+// output: nothing 
 void listofPrjEmpAssignment::setProjectStatus(Employee e, Project b, int mys)
 {
 	string ID;
@@ -342,6 +379,9 @@ void listofPrjEmpAssignment::setProjectStatus(Employee e, Project b, int mys)
 	}
 }
 
+// purpose: to print all the projects that are completed. 
+// inpit: nothing
+// output: nothong 
 void listofPrjEmpAssignment::listAllCompleteProjects()
 {
 	bool temp = false;
@@ -359,6 +399,9 @@ void listofPrjEmpAssignment::listAllCompleteProjects()
 	}
 }
 
+// purpose: to print all the projects that are not completed. 
+// inpit: nothing
+// output: nothong 
 void listofPrjEmpAssignment::listAllIncompleteProjects()
 {
 	for (int i = 0; i < plist.size();i++)
@@ -370,7 +413,9 @@ void listofPrjEmpAssignment::listAllIncompleteProjects()
 	}
 }
 
-
+// purpose: to delete an assignment of prj and emp from the vector (NOT USED)
+// inpts: objects employee and project
+// output: nothing 
 void listofPrjEmpAssignment::deleteEmpPrjAss(Employee e, Project b)
 {
 	int index;
@@ -392,6 +437,11 @@ void listofPrjEmpAssignment::deleteEmpPrjAss(Employee e, Project b)
 	list.erase(list.begin() + index);
 
 }
+
+
+// purpose: destrcutor, outputs the list of emp prj assignment into the file.
+// input: nothing
+// output: nothing 
 listofPrjEmpAssignment::~listofPrjEmpAssignment()
 {
 	ofstream mycout("epa.txt");
