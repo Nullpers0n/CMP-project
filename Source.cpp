@@ -11,44 +11,6 @@
 
 using namespace std;
 
-
-//-----------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-// -----------------------------------------------------
-//-------- constrcutor 
-
-//-----------------------------------------------------------
-
-
-//-----------------------------------------------------------
-
-
-
-
-//-----------------------------------------
-
-
-// functions definition of projectlist
-
-
-
-//-----------------------------------------
-
-
-
-
 void main() {
 
 	char x;
@@ -86,7 +48,8 @@ void main() {
 		cout << "Enter the letter of the choice to choose it: ";
 		cin >> x;
 		cout << endl;
-		if (x == 'a') {
+		if( (x == 'a') || (x == 'A') )
+		{
 			cout << "Enter ID and name  of new Employee" << endl;
 			cin >> eID;
 			cin.ignore(1000, '\n');
@@ -98,10 +61,11 @@ void main() {
 			{
 				cout << "Employee added.\n";
 			}
-			else cout << "Employee with this ID or name already exists.\n"; 
+			else cout << "Employee with this ID or name already exists.\n\nChoose your option again.\n"; 
 		}
-		else if (x == 'b') {
-			cout << "Enter ID and title of new Project" << endl;
+		else if ( (x == 'b') || (x == 'B') )
+		{
+			cout << "Enter ID and title of new Project: " << endl;
 			cin >> pID;
 			cin.ignore(1000, '\n');
 			getline(cin, title);
@@ -112,9 +76,10 @@ void main() {
 			{
 				cout << "Project added.\n";
 			}
-			else cout << "Project with this ID or title already exists. \n";
+			else cout << "Project with this ID or title already exists. \nChoose your option again.\n";
 		}
-		else if (x == 'c') {
+		else if ((x == 'c') || (x == 'C'))
+		{
 			for (int i = 0; i < elist.getEmpListSize(); i++)
 			{
 				emp = elist.getEmployee(i);
@@ -133,61 +98,86 @@ void main() {
 			}
 
 		}
-		else if (x == 'd') {
+		else if ((x == 'd') || (x == 'D'))
+		{
 
 			plist.listProjects();
 
 		}
-		else if (x == 'e') {
+		else if ((x == 'e') || (x == 'E'))
+		{
 
 			peassignlist.listAllCompleteProjects();
 
 		}
-		else if (x == 'f') {
+		else if ((x == 'f') || (x == 'F') )
+		{
 
 			peassignlist.listAllIncompleteProjects();
 
 		}
-		else if (x == 'g') {
+		else if ((x == 'g') || (x == 'G'))
+		{
 
 			cout << "Enter the employee ID: ";
 			cin >> eID;
 			index = elist.getIndexUsingID(eID);
+			if (index == -1)
+			{
+				cout << "Error: the ID you entered doesn't exist.\nChoose your option again.\n";
+				continue; 
+			}
 			emp = elist.getEmployee(index);
 			cout << "Name: " << emp.getName() << " ID: " << emp.getID() << endl;
 
 		}
-		else if (x == 'h')
+		else if ((x == 'h') || (x == 'H'))
 		{
 			cout << "Enter the employee name: ";
 			cin.ignore(1000, '\n');
 			getline(cin, name);
 			index = elist.getIndexUsingName(name);
+			if (index == -1)
+			{
+				cout << "Error: the name you entered doesn't exist.\nChoose your option again.\n";
+				continue;
+			}
 			emp = elist.getEmployee(index);
 			cout << "Name: " << emp.getName() << " ID: " << emp.getID() << endl;
 		}
-		else if (x == 'i') {
+		else if ( (x == 'i') || (x == 'I') )
+		{
 
 			cout << "Enter the project ID: ";
 			cin >> pID;
 			index = plist.getIndexUsingID(pID);
+			if (index == -1)
+			{
+				cout << "Error: the ID you entered doesn't exist.\nChoose your option again.\n";
+				continue;
+			}
 			prj = plist.getProject(index);
 			cout << "Title: " << prj.getTitle() << " ID: " << prj.getID() << endl;
 
 
 		}
 
-		else if (x == 'j')
+		else if ( (x == 'j') || (x == 'J') )
 		{
 			cout << "Enter the project title: ";
 			cin.ignore(1000, '\n');
 			getline(cin, title);
 			index = plist.getIndexUsingTitle(title);
+			if (index == -1)
+			{
+				cout << "Error: the title you entered doesn't exist.\nChoose your option again.\n";
+				continue;
+			}
 			prj = plist.getProject(index);
 			cout << "Title: " << prj.getTitle() << " ID: " << prj.getID() << endl;
 
 		}
-		else if (x == 'k')
+		else if ( (x == 'k') || (x == 'K') )
 		{
 			no = elist.getEmpListSize();
 			cout << "Enter the employee ID: ";
@@ -195,9 +185,9 @@ void main() {
 			index = elist.getIndexUsingID(eID);
 			while (index == -1)
 			{
-				cout << "Error the ID you entered doesn't exist, enter again: ";
-				cin >> eID;
-				index = elist.getIndexUsingID(eID);
+				cout << "Error: the ID you entered doesn't exist. \nChoose your option again.\n";
+
+				continue; 
 			}
 			emp = elist.getEmployee(index);
 
@@ -206,23 +196,34 @@ void main() {
 			index = plist.getIndexUsingID(pID);
 			while (index == -1)
 			{
-				cout << "Error the ID you entered doesn't exist, enter again: ";
-				cin >> pID;
-				index = plist.getIndexUsingID(pID);
+				cout << "Error: the ID you entered doesn't exist.\nChoose your option again.\n";
+				continue; 
 			}
 			prj = plist.getProject(index);
 			peassignlist.addEmpPrjAssignment(emp, prj);
 			peassignlist.putEmpsInList(emp);
 			peassignlist.putPrjsInList(prj);
 		}
-		else if (x == 'l')
+		else if ((x == 'l') || (x == 'L'))
 		{
 			cout << "Enter the project ID: ";
 			cin >> pID;
 			index = plist.getIndexUsingID(pID);
+			while (index == -1)
+			{
+				cout << "Error: the ID you entered doesn't exist. \nChoose your option again.\n";
+
+				continue;
+			}
 			prj = plist.getProject(index);
 			cout << "Enter the Employee ID: ";
 			cin >> eID;
+				while (index == -1)
+			{
+				cout << "Error: the ID you entered doesn't exist. \nChoose your option again.\n";
+
+				continue; 
+			}
 			index = elist.getIndexUsingID(eID);
 			emp = elist.getEmployee(index);
 			cout << "Enter the status you want to set this prohject as, 0 for incomplete and 1 for complete: ";
@@ -239,7 +240,7 @@ void main() {
 			// i think it works now. 
 		}
 		else {
-			cout << "Exiting the program" << endl;
+			cout << "Exiting the program." << endl;
 			break;
 		}
 	}
